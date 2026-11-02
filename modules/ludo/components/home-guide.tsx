@@ -9,6 +9,7 @@ const RULE_KEYS = [
   "guide.rules.track",
   "ludo.rules.leaveBase",
   "ludo.rules.bonus",
+  "ludo.rules.block",
   "ludo.rules.capture",
   "ludo.rules.finish",
 ] as const satisfies readonly TranslationKey[]

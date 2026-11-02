@@ -82,17 +82,84 @@ export function trackIndexOf(color: PlayerColor, progress: number): number | nul
   return (START_INDEX[color] + progress) % MAIN_TRACK_LENGTH
 }
 
+/** progress đích nếu chỉ xét số bước (ra chuồng cần 6, về đích phải đúng số), chưa xét quân khác trên đường. */
 export function targetProgress(progress: number, dice: number): number | null {
   if (progress === BASE_PROGRESS) return dice === ROLL_TO_LEAVE_BASE ? 0 : null
   const target = progress + dice
   return target > FINISH_PROGRESS ? null : target
 }
 
+/**
+ * Khoá của ô thật trên bàn cờ ứng với progress của một màu: vòng ngoài dùng chung cho mọi màu,
+ * đường về là riêng từng màu. null = trong chuồng hoặc đã về đích (nhiều quân ở chung được).
+ */
+function cellKey(color: PlayerColor, progress: number): string | null {
+  if (progress === BASE_PROGRESS || progress === FINISH_PROGRESS) return null
+  const trackIndex = trackIndexOf(color, progress)
+  return trackIndex === null ? `home:${color}:${progress}` : `track:${trackIndex}`
+}
+
+export interface TokenRef {
+  color: PlayerColor
+  tokenIndex: number
+}
+
+interface Occupant extends TokenRef {
+  progress: number
+}
+
+/** Các quân đang đứng ở ô `key`, trừ quân `except` (quân đang đi). */
+function occupantsAt(state: GameState, key: string, except: TokenRef): Occupant[] {
+  return state.players.flatMap(({ color }) =>
+    state.tokens[color].flatMap((progress, tokenIndex) =>
+      (color !== except.color || tokenIndex !== except.tokenIndex) && cellKey(color, progress) === key
+        ? [{ color, tokenIndex, progress }]
+        : []
+    )
+  )
+}
+
+export interface MovePlan {
+  to: number
+  /** Quân đối thủ bị đá nếu đi nước này. */
+  captures: Occupant[]
+}
+
+/**
+ * Nước đi hợp lệ của một quân với số xúc xắc, hoặc null nếu không đi được:
+ * - Bị cản: không được vượt qua bất kỳ quân nào (của mình hay đối thủ) đứng giữa đường.
+ * - Mỗi ô chỉ một quân: không được dừng ở ô có quân mình. Ô có quân đối thủ thì đá quân đó,
+ *   trừ ô an toàn (ô xuất phát, ô ngôi sao) thì không được dừng.
+ * - Ngoại lệ: ra quân vào ô xuất phát của mình mà có quân đối thủ đứng đó thì đá quân đó,
+ *   để không ai bị chặn ra quân mãi.
+ * Chuồng và ô đích (giữa bàn) chứa được nhiều quân.
+ */
+export function planMove(state: GameState, color: PlayerColor, tokenIndex: number, dice: number): MovePlan | null {
+  const from = state.tokens[color][tokenIndex]
+  const to = from === undefined ? null : targetProgress(from, dice)
+  if (from === undefined || to === null) return null
+  const self = { color, tokenIndex }
+
+  for (let progress = from + 1; progress < to; progress++) {
+    const key = cellKey(color, progress)
+    if (key !== null && occupantsAt(state, key, self).length > 0) return null
+  }
+
+  const landingKey = cellKey(color, to)
+  if (landingKey === null) return { to, captures: [] }
+  const occupants = occupantsAt(state, landingKey, self)
+  if (occupants.length === 0) return { to, captures: [] }
+  if (occupants.some((occupant) => occupant.color === color)) return null
+
+  const landingIndex = trackIndexOf(color, to)
+  const isSafe = landingIndex !== null && SAFE_TRACK_INDICES.has(landingIndex)
+  if (isSafe && from !== BASE_PROGRESS) return null
+  return { to, captures: occupants }
+}
+
 export function movableTokens(state: GameState, dice: number): number[] {
   const color = currentPlayer(state).color
-  return state.tokens[color].flatMap((progress, index) =>
-    targetProgress(progress, dice) === null ? [] : [index]
-  )
+  return state.tokens[color].flatMap((_, index) => (planMove(state, color, index, dice) === null ? [] : [index]))
 }
 
 function hasFinishedAllTokens(state: GameState, color: PlayerColor): boolean {
@@ -141,26 +208,24 @@ export function applyMove(state: GameState, tokenIndex: number): GameState {
   if (state.phase !== "moving" || state.dice === null) throw new Error("No dice to move with")
   const dice = state.dice
   const color = currentPlayer(state).color
+  const plan = planMove(state, color, tokenIndex, dice)
+  if (!plan) throw new Error(`Token ${tokenIndex} cannot move ${dice}`)
   const from = state.tokens[color][tokenIndex]
-  const to = from === undefined ? null : targetProgress(from, dice)
-  if (from === undefined || to === null) throw new Error(`Token ${tokenIndex} cannot move ${dice}`)
+  const { to } = plan
 
   const tokens = {
     ...state.tokens,
     [color]: state.tokens[color].map((progress, index) => (index === tokenIndex ? to : progress)),
   }
-  const captured: LastMove["captured"] = []
-  const landingIndex = trackIndexOf(color, to)
-
-  if (landingIndex !== null && !SAFE_TRACK_INDICES.has(landingIndex)) {
-    for (const opponent of state.players) {
-      if (opponent.color === color) continue
-      tokens[opponent.color] = tokens[opponent.color].map((progress, index) => {
-        if (trackIndexOf(opponent.color, progress) !== landingIndex) return progress
-        captured.push({ color: opponent.color, tokenIndex: index, progress })
-        return BASE_PROGRESS
-      })
-    }
+  const captured: LastMove["captured"] = plan.captures.map(({ color: victim, tokenIndex: index, progress }) => ({
+    color: victim,
+    tokenIndex: index,
+    progress,
+  }))
+  for (const victim of captured) {
+    tokens[victim.color] = tokens[victim.color].map((progress, index) =>
+      index === victim.tokenIndex ? BASE_PROGRESS : progress
+    )
   }
 
   const reachedFinish = to === FINISH_PROGRESS

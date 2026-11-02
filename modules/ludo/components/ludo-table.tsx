@@ -14,7 +14,7 @@ export interface SeatInfo {
   actions?: React.ReactNode
 }
 
-interface LudoTableProps {
+export interface LudoTableProps {
   /** null = chưa có ván (phòng chờ): chỉ hiện quân trong chuồng của các màu đã có người. */
   view: GameView | null
   busy: boolean
@@ -38,7 +38,29 @@ export function previewState(colors: readonly PlayerColor[]): Pick<GameState, "p
   return { players: colors.map((color) => ({ color, kind: "human" as const })), tokens }
 }
 
-function TurnBanner({ state, busy }: { state: GameState; busy: boolean }) {
+/** Lượt hiện tại nhìn từ máy này: ai đang tới lượt, máy này được tung / chọn quân nào. Dùng chung cho 2D và 3D. */
+export function tableTurn({ view, busy, canControl }: Pick<LudoTableProps, "view" | "busy" | "canControl">) {
+  const state = view?.state ?? null
+  const playing = state && state.phase !== "finished" ? currentPlayer(state).color : null
+  const iControlTurn = playing !== null && !busy && canControl(playing)
+  const selectable =
+    iControlTurn && state?.phase === "moving" && state.dice !== null
+      ? { color: playing, tokens: movableTokens(state, state.dice) }
+      : null
+  const rollableColor = iControlTurn && state?.phase === "rolling" ? playing : null
+  return { state, playing, selectable, rollableColor }
+}
+
+/** Số quân đã về đích và thứ hạng (nếu đã về hết) của một màu. */
+export function seatProgress(state: GameState | null, color: PlayerColor) {
+  return {
+    tokens: state?.tokens[color],
+    rank: state ? state.rankings.indexOf(color) + 1 || undefined : undefined,
+  }
+}
+
+/** Dòng báo lượt: màu đang đi, hoặc "Kết thúc"; kèm thông báo mất lượt. */
+export function TurnBanner({ state, busy }: { state: GameState; busy: boolean }) {
   const { t } = useI18n()
   if (state.phase === "finished") {
     return <p className="rounded-full bg-primary px-4 py-1 font-bold text-primary-foreground">{t("ludo.gameOver.title")}</p>
@@ -56,7 +78,7 @@ function TurnBanner({ state, busy }: { state: GameState; busy: boolean }) {
         {t("ludo.status.turn", { player: t(`ludo.color.${color}`) })}
       </span>
       {state.lastTurnEnd && lastRoll && !busy && (
-        <span className="text-sm font-semibold text-destructive-foreground">
+        <span className="rounded-full bg-background/70 px-3 py-0.5 text-sm font-semibold text-destructive-foreground">
           {t(state.lastTurnEnd === "three-sixes" ? "ludo.status.threeSixes" : "ludo.status.noMoves", {
             player: t(`ludo.color.${lastRoll.color}`),
           })}
@@ -66,35 +88,33 @@ function TurnBanner({ state, busy }: { state: GameState; busy: boolean }) {
   )
 }
 
-export function LudoTable({
-  view,
+/** Dòng trên cùng của bàn chơi: (trái) trạng thái ghế, (giữa) báo lượt, (phải) nút của chủ phòng. */
+export function TableBanner({
+  state,
   busy,
-  activeColors,
-  seats,
-  canControl,
-  onRoll,
-  onMove,
   idleBanner,
   bannerStart,
   bannerEnd,
-}: LudoTableProps) {
-  const state = view?.state ?? null
-  const playing = state && state.phase !== "finished" ? currentPlayer(state).color : null
-  const iControlTurn = playing !== null && !busy && canControl(playing)
-  const selectable =
-    iControlTurn && state?.phase === "moving" && state.dice !== null
-      ? { color: playing, tokens: movableTokens(state, state.dice) }
-      : null
+}: Pick<LudoTableProps, "busy" | "idleBanner" | "bannerStart" | "bannerEnd"> & { state: GameState | null }) {
+  return (
+    <div className="flex min-h-9 flex-wrap items-center justify-center gap-2 sm:grid sm:grid-cols-[1fr_auto_1fr]">
+      <div className="flex justify-start">{bannerStart}</div>
+      <div className="order-last flex w-full justify-center sm:order-none sm:w-auto">
+        {state ? <TurnBanner state={state} busy={busy} /> : idleBanner}
+      </div>
+      <div className="ml-auto flex justify-end gap-2">{bannerEnd}</div>
+    </div>
+  )
+}
+
+/** Bàn chơi 2D: bàn cờ SVG ở giữa, 4 panel ghế (kèm xúc xắc) cạnh 4 chuồng. */
+export function LudoTable(props: LudoTableProps) {
+  const { view, activeColors, seats, onRoll, onMove } = props
+  const { state, playing, selectable, rollableColor } = tableTurn(props)
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-9 flex-wrap items-center justify-center gap-2 sm:grid sm:grid-cols-[1fr_auto_1fr]">
-        <div className="flex justify-start">{bannerStart}</div>
-        <div className="order-last flex w-full justify-center sm:order-none sm:w-auto">
-          {state ? <TurnBanner state={state} busy={busy} /> : idleBanner}
-        </div>
-        <div className="ml-auto flex justify-end gap-2">{bannerEnd}</div>
-      </div>
+      <TableBanner {...props} state={state} />
 
       <div className="ludo-table">
         {PLAYER_COLORS.map((color) => (
@@ -102,14 +122,13 @@ export function LudoTable({
             key={color}
             color={color}
             {...seats[color]}
+            {...seatProgress(state, color)}
             active={activeColors.includes(color)}
             isTurn={playing === color}
             diceFace={view?.diceFaces[color] ?? 6}
             rolling={view?.rollingColor === color}
-            canRoll={iControlTurn && playing === color && state?.phase === "rolling"}
+            canRoll={rollableColor === color}
             onRoll={onRoll}
-            tokens={state?.tokens[color]}
-            rank={state ? state.rankings.indexOf(color) + 1 || undefined : undefined}
             className={color === "blue" || color === "yellow" ? "lg:self-end" : "lg:self-start"}
           />
         ))}

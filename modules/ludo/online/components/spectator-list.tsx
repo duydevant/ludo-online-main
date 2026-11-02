@@ -17,6 +17,17 @@ interface SpectatorListProps {
   isHost: boolean
 }
 
+/** Số thành viên trong phòng chưa ngồi ghế nào. */
+export function spectatorCount(room: RoomData): number {
+  const seated = new Set(
+    PLAYER_COLORS.flatMap((color) => {
+      const seat = room.seats[color]
+      return seat?.kind === "human" ? [seat.uid] : []
+    })
+  )
+  return Object.keys(room.members).filter((memberId) => !seated.has(memberId)).length
+}
+
 /** Thành viên trong phòng chưa ngồi ghế nào. */
 export function SpectatorList({ roomId, room, uid, isHost }: SpectatorListProps) {
   const { t } = useI18n()
@@ -42,14 +53,18 @@ export function SpectatorList({ roomId, room, uid, isHost }: SpectatorListProps)
         <ul className="flex flex-wrap gap-2">
           {spectators.map(([memberId, member]) => (
             <li key={memberId} className="flex items-center gap-1.5 rounded-full bg-white/10 py-1 pr-1 pl-3 text-sm">
-              {memberId === room.hostId && <CrownIcon className="size-3.5 text-yellow-500" aria-label={t("ludo.online.host")} />}
+              {memberId === room.hostId && (
+                <CrownIcon className="size-3.5 text-yellow-500" aria-label={t("ludo.online.host")} />
+              )}
               <span>{memberId === uid ? t("ludo.online.you", { name: member.name }) : member.name}</span>
               {isHost && memberId !== uid ? (
                 <Button
                   size="icon-xs"
                   variant="ghost"
                   aria-label={t("ludo.online.kick")}
-                  onClick={() => void kickMember(roomId, room, memberId).catch(() => toast.error(t("ludo.online.actionFailed")))}
+                  onClick={() =>
+                    void kickMember(roomId, room, memberId).catch(() => toast.error(t("ludo.online.actionFailed")))
+                  }
                 >
                   <UserXIcon />
                 </Button>

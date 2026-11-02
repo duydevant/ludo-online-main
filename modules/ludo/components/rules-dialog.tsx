@@ -1,6 +1,6 @@
 "use client"
 
-import { BookOpenIcon, CrownIcon, DicesIcon, ShieldIcon, SwordsIcon } from "lucide-react"
+import { BanIcon, BookOpenIcon, CrownIcon, DicesIcon, ShieldIcon, SwordsIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -9,6 +9,7 @@ import { useI18n } from "@/lib/i18n"
 const RULES = [
   { key: "ludo.rules.leaveBase", icon: DicesIcon },
   { key: "ludo.rules.bonus", icon: DicesIcon },
+  { key: "ludo.rules.block", icon: BanIcon },
   { key: "ludo.rules.capture", icon: SwordsIcon },
   { key: "ludo.rules.finish", icon: CrownIcon },
 ] as const
