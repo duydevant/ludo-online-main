@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Icon Cờ Cá Ngựa: 4 chuồng màu ở 4 góc như bàn cờ, giữa là quân ngựa đỏ.
+       Nguồn duy nhất cho favicon / apple-icon / icon PWA: chạy `npm run brand:assets` để xuất lại PNG, ICO. -->
+  <rect width="512" height="512" rx="112" fill="#1e1b4b"/>
+  <rect x="48" y="48" width="200" height="200" rx="44" fill="#ef4444"/>
+  <rect x="264" y="48" width="200" height="200" rx="44" fill="#22c55e"/>
+  <rect x="48" y="264" width="200" height="200" rx="44" fill="#3b82f6"/>
+  <rect x="264" y="264" width="200" height="200" rx="44" fill="#eab308"/>
+  <circle cx="256" cy="256" r="148" fill="#fffaf0" stroke="#1e1b4b" stroke-width="18"/>
+  <g transform="translate(256 268) scale(2.35) translate(-50 -56)">
+    <path d="M16 91 Q16 82 26 80 L74 80 Q84 82 84 91 Q84 98 76 98 L24 98 Q16 98 16 91 Z" fill="#b91c1c"/>
+    <path d="M27 81 L31 71 L71 71 L74 81 Z" fill="#ef4444" stroke="#b91c1c" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M71 72 C78 54 76 33 63 19 L62 4 L53 14 C40 15 27 25 18 40 C14 47 18 55 27 55 C33 55 38 52 44 49 C40 57 34 64 31 72 Z" fill="#ef4444" stroke="#b91c1c" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M65 22 C73 36 74 54 69 69" fill="none" stroke="#b91c1c" stroke-width="5" stroke-linecap="round" opacity="0.55"/>
+    <path d="M50 20 C40 22 30 31 24 41 C30 34 40 27 50 25 Z" fill="#ffffff" opacity="0.45"/>
+    <circle cx="46" cy="30" r="4" fill="#0f172a"/>
+    <circle cx="47.2" cy="28.8" r="1.3" fill="#ffffff"/>
+    <circle cx="23" cy="46" r="2" fill="#b91c1c"/>
+  </g>
+</svg>

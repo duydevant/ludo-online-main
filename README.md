@@ -5,6 +5,8 @@ Cờ cá ngựa (Ludo) 2–4 người trên Next.js. Vào `/` là vào thẳng m
 - **Chơi trên máy**: đấu bot hoặc chuyền máy cho bạn bè, không cần mạng.
 - **Chơi online**: tạo phòng (mã 6 ký tự, link `/room/<mã>`), tối đa 4 ghế, còn lại là người xem. Dùng Firebase Realtime Database, xem `docs/online-setup.md`.
 
+Production: https://ludo.antfootage.net
+
 Không có tài khoản / đăng nhập. Chế độ online tự đăng nhập ẩn danh Firebase để mỗi trình duyệt có một `uid`.
 
 ## Bắt đầu
@@ -26,7 +28,10 @@ npm run lint    # eslint
 npm test        # vitest run
 npm run test:watch
 npx tsc --noEmit
+npm run brand:assets   # xuất lại favicon, icon PWA, ảnh chia sẻ sau khi sửa app/icon.svg
 ```
+
+SEO (metadata, icon, JSON-LD, checklist khi lên production): xem `docs/seo.md`.
 
 ## Cấu trúc
 
@@ -35,7 +40,8 @@ app/             # `/` (menu + ván trên máy), `/room/[roomId]` (phòng online
 modules/ludo/    # engine, bot, hiệu ứng, giao diện, chế độ online
 components/      # shadcn/ui, chọn ngôn ngữ
 lib/             # i18n, routes, firebase, SEO
-docs/            # kiến trúc, cài đặt online
+docs/            # kiến trúc, cài đặt online, SEO
+scripts/         # generate-brand-assets.mjs: xuất favicon / icon / ảnh OG từ app/icon.svg
 ```
 
 ## Chạy bằng Docker

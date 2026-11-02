@@ -2,9 +2,9 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
 
-export const locales = ["en", "vi"] as const
+import { DEFAULT_LOCALE, locales, type Locale } from "@/lib/locale"
 
-export type Locale = (typeof locales)[number]
+export { locales, type Locale }
 
 const STORAGE_KEY = "base-game.locale"
 
@@ -25,6 +25,24 @@ const en = {
   "menu.exitConfirmTitle": "Leave this game?",
   "menu.exitConfirm": "The current game is not saved and will be lost.",
   "menu.keepPlaying": "Keep playing",
+  "guide.about.title": "What is Ludo online?",
+  "guide.about.body": "Ludo is a classic race board game for 2–4 players: roll the dice, bring your four horses out of the stable and race them around the board to the finish. Here you can play it free in your browser — against smart bots, with friends on the same device, or in an online room with a 6-character invite code and live chat.",
+  "guide.rules.title": "Rules",
+  "guide.rules.track": "Each player moves their tokens clockwise around the board, then up their own colored home column to the finish.",
+  "guide.online.title": "Play online with friends",
+  "guide.online.step1": "Choose “Play online” and enter your name.",
+  "guide.online.step2": "Create a room, then share the 6-character code or the invite link.",
+  "guide.online.step3": "Friends join as spectators and pick a free seat. The host can fill empty seats with bots.",
+  "guide.online.step4": "The host presses Start. Chat with the table while you play.",
+  "guide.faq.title": "FAQ",
+  "guide.faq.free.q": "Is it free?",
+  "guide.faq.free.a": "Yes. The game is completely free, with no download and no sign-up.",
+  "guide.faq.mobile.q": "Can I play on my phone?",
+  "guide.faq.mobile.a": "Yes. The game runs in any modern browser on phones, tablets and computers.",
+  "guide.faq.players.q": "How many people can play?",
+  "guide.faq.players.a": "2 to 4 players per table. Online rooms have 4 seats; anyone else can watch and chat.",
+  "guide.faq.saved.q": "What happens if I reload the page?",
+  "guide.faq.saved.a": "Games on this device are saved in your browser and continue after a reload. Your win/loss record is saved too.",
   "stats.title": "Your record",
   "stats.played": "Games",
   "stats.wins": "Wins",
@@ -151,6 +169,24 @@ const vi: TranslationDictionary = {
   "menu.exitConfirmTitle": "Thoát ván đang chơi?",
   "menu.exitConfirm": "Ván này không được lưu, thoát là mất.",
   "menu.keepPlaying": "Chơi tiếp",
+  "guide.about.title": "Cờ cá ngựa online là gì?",
+  "guide.about.body": "Cờ cá ngựa (Ludo) là trò chơi bàn cờ đua cho 2–4 người: gieo xúc xắc, đưa 4 chú ngựa ra khỏi chuồng và đua một vòng quanh bàn cờ về đích. Ở đây bạn chơi miễn phí ngay trên trình duyệt: đấu với bot, chơi chung một máy với bạn bè, hoặc tạo phòng online bằng mã 6 ký tự và chat với cả bàn.",
+  "guide.rules.title": "Luật chơi cờ cá ngựa",
+  "guide.rules.track": "Mỗi người đi quân theo chiều kim đồng hồ quanh bàn cờ, rồi lên dãy ô cùng màu của mình để về đích.",
+  "guide.online.title": "Cách chơi online với bạn bè",
+  "guide.online.step1": "Chọn “Chơi online” và nhập tên của bạn.",
+  "guide.online.step2": "Tạo phòng, rồi gửi mã 6 ký tự hoặc link mời cho bạn bè.",
+  "guide.online.step3": "Bạn bè vào phòng sẽ là người xem và chọn ghế còn trống. Chủ phòng có thể thêm bot vào ghế trống.",
+  "guide.online.step4": "Chủ phòng bấm Bắt đầu. Vừa chơi vừa chat với cả bàn.",
+  "guide.faq.title": "Câu hỏi thường gặp",
+  "guide.faq.free.q": "Chơi có mất phí không?",
+  "guide.faq.free.a": "Không. Game hoàn toàn miễn phí, không cần tải về và không cần đăng ký tài khoản.",
+  "guide.faq.mobile.q": "Chơi trên điện thoại được không?",
+  "guide.faq.mobile.a": "Được. Game chạy trên trình duyệt của điện thoại, máy tính bảng và máy tính.",
+  "guide.faq.players.q": "Một bàn chơi được mấy người?",
+  "guide.faq.players.a": "Từ 2 đến 4 người. Phòng online có 4 ghế, những người còn lại có thể vào xem và chat.",
+  "guide.faq.saved.q": "Tải lại trang có mất ván không?",
+  "guide.faq.saved.a": "Không. Ván chơi trên máy được lưu trong trình duyệt và tiếp tục sau khi tải lại trang. Lịch sử thắng thua cũng được lưu.",
   "stats.title": "Thành tích",
   "stats.played": "Ván đã chơi",
   "stats.wins": "Thắng",
@@ -285,7 +321,7 @@ interface I18nContextValue {
 const I18nContext = createContext<I18nContextValue | null>(null)
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en")
+  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE)
 
   useEffect(() => {
     const timer = window.setTimeout(() => setLocaleState(preferredLocale()), 0)

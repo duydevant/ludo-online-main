@@ -11,6 +11,7 @@ import type { GameState } from "../game/rules"
 import { OnlineEntry } from "../online/components/online-entry"
 import { useOfflineLudoStore } from "../store/ludo-offline.store"
 import { GameScreen } from "./game-screen"
+import { HomeGuide } from "./home-guide"
 import { HorseAvatar } from "./horse-piece"
 import { LudoBoard } from "./ludo-board"
 import { OfflineSetup } from "./offline-setup"
@@ -84,9 +85,10 @@ export function MainMenu() {
           <span className="hidden sm:inline">{t("app.name")}</span>
         </span>
       }
-      className="justify-center"
+      className="gap-10"
     >
-      <div className="grid items-center gap-6 py-2 lg:grid-cols-[minmax(0,1fr)_27rem] lg:gap-14">
+      {/* Màn đầu vừa khít màn hình (trừ thanh trên); phần giới thiệu nằm bên dưới, cuộn xuống mới thấy. */}
+      <div className="grid min-h-[calc(100dvh-5.5rem)] items-center gap-6 py-2 lg:grid-cols-[minmax(0,1fr)_27rem] lg:gap-14">
         <LudoBoard
           className="mx-auto hidden w-full max-w-[min(100%,calc(100dvh-7rem))] -rotate-2 lg:block"
           state={SHOWCASE}
@@ -150,6 +152,8 @@ export function MainMenu() {
           </section>
         </div>
       </div>
+
+      <HomeGuide />
     </GameScreen>
   )
 }
