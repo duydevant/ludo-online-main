@@ -6,7 +6,7 @@ import {
   SAFE_TRACK_INDICES,
   type PlayerColor,
 } from "./constants"
-import { currentPlayer, movableTokens, targetProgress, trackIndexOf, type GameState } from "./rules"
+import { currentPlayer, movableTokens, planMove, trackIndexOf, type GameState } from "./rules"
 
 /** Có quân đối thủ nào đứng 1..6 ô phía sau ô này và còn đi được tới không. */
 function isThreatened(state: GameState, color: PlayerColor, trackIndex: number): boolean {
@@ -24,21 +24,12 @@ function isThreatened(state: GameState, color: PlayerColor, trackIndex: number):
   )
 }
 
-function opponentsAt(state: GameState, color: PlayerColor, trackIndex: number) {
-  return state.players.flatMap((opponent) =>
-    opponent.color === color
-      ? []
-      : state.tokens[opponent.color].filter(
-          (progress) => trackIndexOf(opponent.color, progress) === trackIndex
-        )
-  )
-}
-
 function scoreMove(state: GameState, tokenIndex: number, dice: number): number {
   const color = currentPlayer(state).color
   const from = state.tokens[color][tokenIndex]
-  const to = targetProgress(from, dice)
-  if (to === null) return Number.NEGATIVE_INFINITY
+  const plan = planMove(state, color, tokenIndex, dice)
+  if (plan === null) return Number.NEGATIVE_INFINITY
+  const { to, captures } = plan
 
   if (to === FINISH_PROGRESS) return 1000
 
@@ -49,11 +40,8 @@ function scoreMove(state: GameState, tokenIndex: number, dice: number): number {
   if (from === BASE_PROGRESS) score += 60
   if (toIndex === null && from <= LAST_MAIN_TRACK_PROGRESS) score += 40
 
+  score += captures.reduce((sum, victim) => sum + 80 + victim.progress, 0)
   if (toIndex !== null) {
-    if (!SAFE_TRACK_INDICES.has(toIndex)) {
-      const victims = opponentsAt(state, color, toIndex)
-      score += victims.reduce((sum, progress) => sum + 80 + progress, 0)
-    }
     if (SAFE_TRACK_INDICES.has(toIndex)) score += 20
     if (isThreatened(state, color, toIndex)) score -= 50 + to
   }

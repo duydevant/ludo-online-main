@@ -51,4 +51,5 @@ Mọi client đưa snapshot vào cùng một animator để phát lại hiệu �
 - `components/` — `GameScreen` (thanh trên + nội dung, dùng cho mọi màn), `MainMenu`, `OfflineSetup`, `LudoBoard` (bàn cờ SVG có khung), `LudoTable` (bàn cờ SVG + 4 `SeatPanel` cạnh 4 chuồng, mỗi panel có xúc xắc riêng), quân ngựa `horse-piece.tsx`, dialog kết thúc. Màu không có người/bot bị làm tối.
 - `audio/sound-effects.ts` — âm thanh tổng hợp bằng Web Audio, không có file asset.
 
-Luật: cần 6 để ra chuồng; tung 6 / đá quân / về đích được tung thêm; ba lần 6 liên tiếp mất lượt; ô xuất phát và ô ngôi sao an toàn; phải tung đúng số để về đích.
+Luật: cần 6 để ra chuồng; tung 6 / đá quân / về đích được tung thêm; ba lần 6 liên tiếp mất lượt; phải tung đúng số để về đích.
+Bị cản và mỗi ô một quân (`planMove` trong `game/rules.ts`): không được vượt qua bất kỳ quân nào đứng giữa đường, không được dừng ở ô có quân mình; ô có quân đối thủ thì đá, trừ ô an toàn (ô xuất phát, ô ngôi sao) thì không được dừng; riêng ra quân vào ô xuất phát của mình thì đá quân đối thủ đứng đó. Chuồng và ô đích chứa được nhiều quân. Không quân nào đi được thì mất lượt.

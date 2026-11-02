@@ -28,16 +28,19 @@ describe("ludo bot", () => {
     expect(chooseBotMove(state)).toBe(0)
   })
 
-  it("finishes a full 4-bot game", () => {
-    const random = seededRandom(42)
-    let state = createGame(PLAYER_COLORS.map((color) => ({ color, kind: "bot" as const })))
+  // Luật cản có thể làm quân kẹt vài lượt; chạy nhiều ván để chắc chắn không ván nào kẹt mãi.
+  it.each([2, 3, 4])("finishes many seeded %i-bot games", (playerCount) => {
+    for (let seed = 1; seed <= 40; seed++) {
+      const random = seededRandom(seed * 7919 + playerCount)
+      let state = createGame(PLAYER_COLORS.slice(0, playerCount).map((color) => ({ color, kind: "bot" as const })))
 
-    for (let turn = 0; turn < 5000 && state.phase !== "finished"; turn++) {
-      state = applyRoll(state, rollDice(random))
-      if (state.phase === "moving") state = applyMove(state, chooseBotMove(state)!)
+      for (let turn = 0; turn < 10000 && state.phase !== "finished"; turn++) {
+        state = applyRoll(state, rollDice(random))
+        if (state.phase === "moving") state = applyMove(state, chooseBotMove(state)!)
+      }
+
+      expect(state.phase, `seed ${seed}`).toBe("finished")
+      expect([...state.rankings].sort()).toEqual([...PLAYER_COLORS.slice(0, playerCount)].sort())
     }
-
-    expect(state.phase).toBe("finished")
-    expect([...state.rankings].sort()).toEqual([...PLAYER_COLORS].sort())
   })
 })

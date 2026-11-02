@@ -78,7 +78,10 @@ const en = {
   "ludo.rules.title": "How to play",
   "ludo.rules.leaveBase": "Roll a 6 to bring a token out of its base.",
   "ludo.rules.bonus": "Rolling a 6, capturing, or reaching home gives another roll. Three 6s in a row lose the turn.",
-  "ludo.rules.capture": "Land on an opponent to send it back to base. Starred and start squares are safe.",
+  "ludo.rules.block":
+    "No jumping and no sharing: a token can't pass any other token (yours or an opponent's), and each square holds only one token. If a token is blocked, move another one; if none can move, you lose the turn.",
+  "ludo.rules.capture":
+    "Land exactly on an opponent to send it back to base. Start and star squares are safe: you can't stop on an opponent there, except when bringing a token out onto your own start, which captures it.",
   "ludo.rules.finish": "You need the exact roll to reach home. Get all 4 tokens home first to win.",
   "ludo.status.turn": "{player}'s turn",
   "ludo.status.roll": "Roll the dice",
@@ -222,7 +225,10 @@ const vi: TranslationDictionary = {
   "ludo.rules.title": "Cách chơi",
   "ludo.rules.leaveBase": "Tung được 6 mới đưa quân ra khỏi chuồng.",
   "ludo.rules.bonus": "Tung 6, đá quân hoặc về đích được tung thêm. Ba lần 6 liên tiếp sẽ mất lượt.",
-  "ludo.rules.capture": "Đi vào ô có quân đối thủ để đá về chuồng. Ô ngôi sao và ô xuất phát là ô an toàn.",
+  "ludo.rules.block":
+    "Bị cản: không được đi vượt qua quân khác (của mình hay đối thủ), và mỗi ô chỉ đứng được một quân. Quân bị cản thì chọn quân khác để đi; không quân nào đi được thì mất lượt.",
+  "ludo.rules.capture":
+    "Đi đúng vào ô có quân đối thủ thì đá quân đó về chuồng. Ô xuất phát và ô ngôi sao là ô an toàn: không được dừng ở đó nếu đã có quân đối thủ, riêng khi ra quân thì quân đối thủ đứng ở ô xuất phát của mình bị đá.",
   "ludo.rules.finish": "Phải tung đúng số để về đích. Ai đưa đủ 4 quân về trước sẽ thắng.",
   "ludo.status.turn": "Lượt của {player}",
   "ludo.status.roll": "Tung xúc xắc",
