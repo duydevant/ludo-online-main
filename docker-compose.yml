@@ -4,5 +4,5 @@ services:
     image: ludo-online:latest
     container_name: ludo-online
     ports:
-      - "1102:3000"
+      - "1030:3000"
     restart: unless-stopped
