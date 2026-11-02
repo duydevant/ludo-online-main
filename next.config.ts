@@ -1,6 +1,10 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
+  // ─── Deploy ──────────────────────────────────────────────────────────────
+  // Build ra .next/standalone (server.js + node_modules tối thiểu) cho Docker image.
+  output: "standalone",
+
   // ─── Performance ─────────────────────────────────────────────────────────
   compress: true,
 
@@ -13,6 +17,16 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
+  },
+
+  // ─── Redirects ───────────────────────────────────────────────────────────
+  // Đường dẫn cũ trước khi gộp menu vào trang chủ.
+  async redirects() {
+    return [
+      { source: "/ludo", destination: "/", permanent: true },
+      { source: "/online", destination: "/", permanent: true },
+      { source: "/online/:roomId", destination: "/room/:roomId", permanent: true },
+    ]
   },
 
   // ─── Security & SEO HTTP Headers ─────────────────────────────────────────

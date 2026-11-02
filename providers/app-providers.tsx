@@ -4,15 +4,16 @@ import { ThemeProvider } from "next-themes"
 
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { I18nProvider } from "@/lib/i18n"
-import { QueryProvider } from "@/providers/query-provider"
+import { useRehydrateLudoStores } from "@/modules/ludo/store/persist-hydration"
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
+  useRehydrateLudoStores()
+
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
+    // Giao diện game chỉ có một theme tối, đồng bộ với bàn cờ.
+    <ThemeProvider attribute="class" forcedTheme="dark" disableTransitionOnChange>
       <I18nProvider>
-        <QueryProvider>
-          <TooltipProvider>{children}</TooltipProvider>
-        </QueryProvider>
+        <TooltipProvider>{children}</TooltipProvider>
       </I18nProvider>
     </ThemeProvider>
   )

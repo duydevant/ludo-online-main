@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+.dockerignore
+*.log
+*.tsbuildinfo
+coverage
+
+# Chỉ .env.local được đưa vào build (để inline NEXT_PUBLIC_*), các file env khác thì không.
+.env
+.env.*
+!.env.local
