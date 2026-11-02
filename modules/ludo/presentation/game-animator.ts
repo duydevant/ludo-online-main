@@ -8,7 +8,10 @@ import { useLudoSettingsStore } from "../store/ludo-settings.store"
 
 const DICE_ROLL_MS = 640
 const DICE_FACE_MS = 80
-const STEP_MS = 150
+/** Mỗi ô quân đi (2D và 3D đều theo nhịp này). */
+export const STEP_MS = 210
+/** Đá quân: quân tấn công bổ xuống ô nạn nhân rồi mới hiện thế cờ mới (nạn nhân bay về chuồng, tiếng đá). */
+export const CAPTURE_IMPACT_MS = 320
 
 export interface MovingToken {
   color: PlayerColor
@@ -85,6 +88,10 @@ export function createGameAnimator() {
         patchView({ movingToken: { color, tokenIndex, progress } })
         sound(from === BASE_PROGRESS ? "leaveBase" : "step")
         await wait(STEP_MS)
+        if (gen !== generation) return
+      }
+      if (move.captured.length > 0) {
+        await wait(CAPTURE_IMPACT_MS)
         if (gen !== generation) return
       }
 

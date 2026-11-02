@@ -12,7 +12,9 @@ import { useOfflineLudoStore } from "../store/ludo-offline.store"
 import { ExitGameButton } from "./exit-game-button"
 import { GameOverDialog } from "./game-over-dialog"
 import { GameScreen } from "./game-screen"
-import { LudoTable, type SeatInfo } from "./ludo-table"
+import { GameTable } from "./game-table"
+import { GraphicsToggle } from "./graphics-toggle"
+import { type SeatInfo } from "./ludo-table"
 
 export function OfflineGame() {
   const { t } = useI18n()
@@ -34,6 +36,10 @@ export function OfflineGame() {
 
   if (!snapshot) return null
 
+  // Chơi chung một máy: camera 3D nhìn từ phía người chơi (không phải bot) đầu tiên.
+  const players = snapshot.state.players
+  const viewerColor = (players.find((player) => player.kind === "human") ?? players[0]).color
+
   const seats = Object.fromEntries(
     PLAYER_COLORS.map((color): [PlayerColor, SeatInfo] => {
       const kind = kindOf(color)
@@ -48,8 +54,10 @@ export function OfflineGame() {
     <GameScreen
       start={<ExitGameButton label={t("menu.exit")} confirm={snapshot.state.phase !== "finished"} onExit={quitGame} />}
       center={<span className="truncate font-bold">{t("menu.offline.title")}</span>}
+      end={<GraphicsToggle />}
     >
-      <LudoTable
+      <GameTable
+        viewerColor={viewerColor}
         view={view}
         busy={busy}
         activeColors={snapshot.state.players.map((player) => player.color)}

@@ -48,7 +48,8 @@ Mọi client đưa snapshot vào cùng một animator để phát lại hiệu �
   - Cả ba dùng `skipHydration`; `useRehydrateLudoStores()` (gọi ở `AppProviders`) đọc localStorage sau khi mount để HTML server khớp lần render đầu. Màn nào phụ thuộc dữ liệu đã lưu thì chờ `usePersistHydrated(store.persist)`.
 - `history/match-record.ts` — kiểu `MatchRecord`, `computeStats` (số ván, thắng, tỉ lệ, chuỗi thắng), `offlineResult` (offline chỉ tính thắng/thua khi có cả người và bot). Có test.
 - `online/` — `room-api.ts` (tạo/vào phòng, presence, ngồi/rời ghế, kick, bot, bắt đầu ván, transaction, gửi chat), `use-room.ts` (theo dõi phòng, tự nhận chủ phòng khi chủ cũ rời), `use-room-chat.ts` (chat realtime ở `chats/{roomId}`, đếm tin chưa đọc, tiếng báo), `components/` (`RoomChat` là nút nổi góc phải dưới, mở ra khung chat).
-- `components/` — `GameScreen` (thanh trên + nội dung, dùng cho mọi màn), `MainMenu`, `OfflineSetup`, `LudoBoard` (bàn cờ SVG có khung), `LudoTable` (bàn cờ SVG + 4 `SeatPanel` cạnh 4 chuồng, mỗi panel có xúc xắc riêng), quân ngựa `horse-piece.tsx`, dialog kết thúc. Màu không có người/bot bị làm tối.
+- `components/` — `GameScreen` (thanh trên + nội dung, dùng cho mọi màn), `MainMenu`, `OfflineSetup`, `LudoBoard` (bàn cờ SVG có khung), `LudoTable` (bàn cờ SVG + 4 `SeatPanel` cạnh 4 chuồng, mỗi panel có xúc xắc riêng), quân ngựa `horse-piece.tsx`, dialog kết thúc. Màu không có người/bot bị làm tối. `GameTable` chọn bàn 2D hoặc 3D (`GraphicsToggle`, lưu trong settings) và tự về 2D khi 3D không chạy được.
+- `three/` — bàn cờ 3D (three.js + @react-three/fiber), chỉ tải khi chọn 3D: mô hình dựng bằng code, hoạt cảnh đọc cùng `GameView` như bản 2D nên không đổi logic hay đồng bộ online. Chi tiết: `docs/3d-plan.md`.
 - `audio/sound-effects.ts` — âm thanh tổng hợp bằng Web Audio, không có file asset.
 
 Luật: cần 6 để ra chuồng; tung 6 / đá quân / về đích được tung thêm; ba lần 6 liên tiếp mất lượt; phải tung đúng số để về đích.

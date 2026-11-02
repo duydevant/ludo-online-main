@@ -15,14 +15,15 @@ import { useGameAnimation } from "../../presentation/use-game-animation"
 import { ExitGameButton } from "../../components/exit-game-button"
 import { GameOverDialog } from "../../components/game-over-dialog"
 import { GameScreen } from "../../components/game-screen"
-import { LudoTable } from "../../components/ludo-table"
+import { GameTable } from "../../components/game-table"
+import { GraphicsToggle } from "../../components/graphics-toggle"
 import { useMatchHistoryStore } from "../../store/match-history.store"
 import { closeRoom, commitGameAction, setHost } from "../room-api"
 import { seatOf, type RoomData } from "../room-types"
 import { GameOverActions } from "./game-over-actions"
 import { RoomChat } from "./room-chat"
 import { HostControls, MIN_PLAYERS, RoomCodeChip, SeatBadge } from "./room-toolbar"
-import { SpectatorList } from "./spectator-list"
+import { SpectatorList, spectatorCount } from "./spectator-list"
 import { useSeatInfo } from "./use-seat-info"
 
 interface RoomViewProps {
@@ -124,10 +125,15 @@ export function RoomView({ roomId, room, uid, isHost }: RoomViewProps) {
         />
       }
       center={<RoomCodeChip roomId={roomId} />}
+      end={<GraphicsToggle />}
       // Chừa chỗ dưới cùng cho nút chat nổi.
       className="gap-4 pb-24"
     >
-      <LudoTable
+      <GameTable
+        // Người xem nhìn theo hướng mặc định (chuồng xanh dương ở dưới, như bàn 2D).
+        viewerColor={seatOf(room, uid) ?? "blue"}
+        footer={<SpectatorList roomId={roomId} room={room} uid={uid} isHost={isHost} />}
+        footerLabel={t("ludo.online.spectators", { count: spectatorCount(room) })}
         view={view}
         busy={busy}
         activeColors={activeColors}
@@ -139,8 +145,6 @@ export function RoomView({ roomId, room, uid, isHost }: RoomViewProps) {
         bannerEnd={<HostControls roomId={roomId} room={room} isHost={isHost} />}
         idleBanner={<p className="text-sm font-semibold text-muted-foreground">{lobbyHint}</p>}
       />
-
-      <SpectatorList roomId={roomId} room={room} uid={uid} isHost={isHost} />
 
       <RoomChat roomId={roomId} room={room} uid={uid} />
 
