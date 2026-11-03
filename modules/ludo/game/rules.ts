@@ -8,6 +8,7 @@ import {
   SAFE_TRACK_INDICES,
   START_INDEX,
   TOKENS_PER_PLAYER,
+  TURN_ORDER,
   type PlayerColor,
 } from "./constants"
 
@@ -52,8 +53,10 @@ export interface GameState {
   lastTurnEnd: TurnEndReason | null
 }
 
-export function createGame(players: Player[]): GameState {
-  if (players.length < 2) throw new Error("Ludo needs at least 2 players")
+export function createGame(seatedPlayers: Player[]): GameState {
+  if (seatedPlayers.length < 2) throw new Error("Ludo needs at least 2 players")
+  // Lượt đi luôn theo TURN_ORDER (ngược chiều kim đồng hồ), bất kể thứ tự ghế được truyền vào.
+  const players = [...seatedPlayers].sort((a, b) => TURN_ORDER.indexOf(a.color) - TURN_ORDER.indexOf(b.color))
 
   const tokens = {} as Record<PlayerColor, number[]>
   for (const player of players) tokens[player.color] = Array(TOKENS_PER_PLAYER).fill(BASE_PROGRESS)

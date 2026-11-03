@@ -21,11 +21,12 @@ const GRID_STROKE = "#cbd5e1"
 const DIM_FILL = "#0f172a"
 const DIM_OPACITY = 0.6
 
+/** Tam giác đích ở giữa bàn: mỗi màu quay về phía đường về của màu đó. */
 const CENTER_TRIANGLES: Record<PlayerColor, string> = {
-  red: "6,6 6,9 7.5,7.5",
-  green: "6,6 9,6 7.5,7.5",
-  yellow: "9,6 9,9 7.5,7.5",
-  blue: "6,9 9,9 7.5,7.5",
+  red: "6,6 9,6 7.5,7.5",
+  green: "9,6 9,9 7.5,7.5",
+  yellow: "6,9 9,9 7.5,7.5",
+  blue: "6,6 6,9 7.5,7.5",
 }
 
 function starPoints(cx: number, cy: number, outer: number, inner: number): string {

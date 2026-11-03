@@ -2,6 +2,9 @@ export const PLAYER_COLORS = ["red", "green", "yellow", "blue"] as const
 
 export type PlayerColor = (typeof PLAYER_COLORS)[number]
 
+/** Thứ tự lượt đi: ngược chiều kim đồng hồ quanh bàn (đỏ trên-trái → xanh dương dưới-trái → vàng → xanh lá). */
+export const TURN_ORDER: readonly PlayerColor[] = ["red", "blue", "yellow", "green"]
+
 export const TOKENS_PER_PLAYER = 4
 
 /** Số ô vòng ngoài dùng chung cho cả 4 màu. */
@@ -18,9 +21,9 @@ export const MAX_CONSECUTIVE_SIXES = 3
 /** Chỉ số ô xuất phát của mỗi màu trên vòng ngoài. */
 export const START_INDEX: Record<PlayerColor, number> = {
   red: 0,
-  green: 13,
+  blue: 13,
   yellow: 26,
-  blue: 39,
+  green: 39,
 }
 
 /** Ô an toàn: ô xuất phát và ô ngôi sao (cách ô xuất phát 8 bước). */

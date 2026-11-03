@@ -24,29 +24,32 @@ function line(from: Cell, to: Cell): Cell[] {
   return Array.from({ length: steps + 1 }, (_, i) => [r1 + dr * i, c1 + dc * i] as const)
 }
 
-/** 52 ô vòng ngoài theo chiều kim đồng hồ, bắt đầu từ ô xuất phát của đỏ. */
+/**
+ * 52 ô vòng ngoài theo chiều NGƯỢC kim đồng hồ (luật cờ cá ngựa Việt Nam), bắt đầu từ ô xuất phát của đỏ:
+ * đỏ ra quân ở cánh trên, đi sang cánh trái → cánh dưới → cánh phải rồi về lại cánh trên.
+ */
 export const MAIN_TRACK_CELLS: readonly Cell[] = [
-  ...line([6, 1], [6, 5]),
-  ...line([5, 6], [0, 6]),
-  [0, 7],
-  ...line([0, 8], [5, 8]),
-  ...line([6, 9], [6, 14]),
-  [7, 14],
-  ...line([8, 14], [8, 9]),
-  ...line([9, 8], [14, 8]),
-  [14, 7],
-  ...line([14, 6], [9, 6]),
-  ...line([8, 5], [8, 0]),
+  ...line([1, 6], [5, 6]),
+  ...line([6, 5], [6, 0]),
   [7, 0],
-  [6, 0],
+  ...line([8, 0], [8, 5]),
+  ...line([9, 6], [14, 6]),
+  [14, 7],
+  ...line([14, 8], [9, 8]),
+  ...line([8, 9], [8, 14]),
+  [7, 14],
+  ...line([6, 14], [6, 9]),
+  ...line([5, 8], [0, 8]),
+  [0, 7],
+  [0, 6],
 ]
 
-/** 5 ô đường về của mỗi màu, theo thứ tự đi vào. */
+/** 5 ô đường về của mỗi màu, theo thứ tự đi vào (cánh nằm ngay trước chuồng theo chiều đi). */
 export const HOME_COLUMN_CELLS: Record<PlayerColor, readonly Cell[]> = {
-  red: line([7, 1], [7, 5]),
-  green: line([1, 7], [5, 7]),
-  yellow: line([7, 13], [7, 9]),
-  blue: line([13, 7], [9, 7]),
+  red: line([1, 7], [5, 7]),
+  green: line([7, 13], [7, 9]),
+  yellow: line([13, 7], [9, 7]),
+  blue: line([7, 1], [7, 5]),
 }
 
 /** Góc trên-trái của chuồng 6x6 mỗi màu. */
@@ -59,10 +62,10 @@ export const BASE_ORIGIN: Record<PlayerColor, Cell> = {
 
 /** Điểm giữa tam giác đích của mỗi màu trong ô trung tâm 3x3. */
 const FINISH_POINT: Record<PlayerColor, Point> = {
-  red: { x: 6.55, y: 7.5 },
-  green: { x: 7.5, y: 6.55 },
-  yellow: { x: 8.45, y: 7.5 },
-  blue: { x: 7.5, y: 8.45 },
+  red: { x: 7.5, y: 6.55 },
+  green: { x: 8.45, y: 7.5 },
+  yellow: { x: 7.5, y: 8.45 },
+  blue: { x: 6.55, y: 7.5 },
 }
 
 export function cellCenter([row, col]: Cell): Point {

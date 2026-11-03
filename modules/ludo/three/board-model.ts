@@ -159,10 +159,10 @@ export function buildBoardModel(materials: StyleMaterials): BoardModel {
   const apex = [0, PYRAMID_TOP, 0]
   const corner = { nw: [-half, base, -half], ne: [half, base, -half], se: [half, base, half], sw: [-half, base, half] }
   const faces: Record<PlayerColor, [number[], number[]]> = {
-    red: [corner.sw, corner.nw],
-    green: [corner.nw, corner.ne],
-    yellow: [corner.ne, corner.se],
-    blue: [corner.se, corner.sw],
+    red: [corner.nw, corner.ne],
+    green: [corner.ne, corner.se],
+    yellow: [corner.se, corner.sw],
+    blue: [corner.sw, corner.nw],
   }
   for (const color of PLAYER_COLORS) {
     const [front, back] = faces[color]
