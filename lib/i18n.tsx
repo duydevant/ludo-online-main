@@ -13,7 +13,7 @@ const en = {
   "language.en": "English",
   "language.vi": "Tiếng Việt",
   "app.name": "Ludo",
-  "app.tagline": "Race your four horses home. 2–4 players, bots or friends.",
+  "app.tagline": "Roll the dice, race your horses to the finish, and be the first to win! 2–4 players, bots or friends.",
   "menu.chooseMode": "Choose a mode",
   "menu.offline.title": "Play on this device",
   "menu.offline.description": "Against bots, or pass the device between friends. No internet needed.",
