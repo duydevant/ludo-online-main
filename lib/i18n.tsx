@@ -177,7 +177,7 @@ const vi: TranslationDictionary = {
   "language.en": "English",
   "language.vi": "Tiếng Việt",
   "app.name": "Cờ Cá Ngựa",
-  "app.tagline": "Đua 4 chú ngựa về đích. 2–4 người, chơi với bot hoặc bạn bè.",
+  "app.tagline": "Tung xúc xắc, đưa cả 4 chú ngựa về đích và giành chiến thắng! 2–4 người, chơi với bot hoặc bạn bè.",
   "menu.chooseMode": "Chọn chế độ chơi",
   "menu.offline.title": "Chơi trên máy",
   "menu.offline.description": "Đấu với bot hoặc chuyền máy cho bạn bè. Không cần mạng.",
