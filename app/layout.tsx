@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
-import { Baloo_2 } from "next/font/google"
+// Font tự host qua npm (Fontsource): build không cần gọi Google Fonts.
+import "@fontsource-variable/baloo-2"
 
 import { JsonLd } from "@/components/seo/json-ld"
 import { Toaster } from "@/components/ui/sonner"
@@ -9,12 +10,6 @@ import { videoGameJsonLd, websiteJsonLd } from "@/lib/seo/schema"
 import { siteConfig } from "@/lib/site"
 import { AppProviders } from "@/providers/app-providers"
 import "./globals.css"
-
-const baloo = Baloo_2({
-  variable: "--font-baloo",
-  subsets: ["latin", "vietnamese"],
-  display: "swap",
-})
 
 // Favicon, apple-icon, ảnh Open Graph lấy tự động từ các file app/favicon.ico, app/icon.svg,
 // app/apple-icon.png, app/opengraph-image.png. Manifest ở app/manifest.ts. Xem docs/seo.md.
@@ -40,7 +35,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang={DEFAULT_LOCALE} className={`${baloo.variable} dark h-full antialiased`} suppressHydrationWarning>
+    <html lang={DEFAULT_LOCALE} className="dark h-full antialiased" suppressHydrationWarning>
       <body className="game-bg relative flex min-h-full flex-col">
         <AppProviders>
           <JsonLd data={[websiteJsonLd(), videoGameJsonLd()]} />
