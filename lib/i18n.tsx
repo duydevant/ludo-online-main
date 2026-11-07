@@ -355,8 +355,8 @@ function preferredLocale(): Locale {
     if (isLocale(saved)) return saved
   } catch {}
 
-  const browserLocale = window.navigator.language.toLowerCase().split("-")[0]
-  return isLocale(browserLocale) ? browserLocale : "en"
+  // Mặc định tiếng Việt, không lấy theo ngôn ngữ trình duyệt.
+  return DEFAULT_LOCALE
 }
 
 interface I18nContextValue {
